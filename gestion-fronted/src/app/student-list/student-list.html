@@ -1,0 +1,36 @@
+<h2>Student List</h2>
+<table class="table">
+  <thead>
+  <tr>
+    <th>Id</th>
+    <th>Name</th>
+    <th>Surname</th>
+    <th>Email</th>
+    <th>Age</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+
+  <tbody>
+    @for (student of students; track student.id) {
+      <tr>
+        <td>{{ student.id }}</td>
+        <td>{{ student.name }}</td>
+        <td>{{ student.surname }}</td>
+        <td>{{ student.email }}</td>
+        <td>{{ student.age }}</td>
+        <td>
+          @if (student.id !== auth.getStudentId()) {
+            <button class="btn btn-danger btn-sm" (click)="deleteStudent(student.id!)">
+              Delete User
+            </button>
+          } @else {
+            <button class="btn btn-secondary btn-sm" disabled style="opacity: 1;">
+              It's you
+            </button>
+          }
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

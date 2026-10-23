@@ -1,0 +1,104 @@
+<div class="col-md-10 offset-md-1 mt-4">
+
+  <!-- CABECERA Y BOTÓN CREAR PLAN -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Social Plans</h2>
+    @if (auth.isAdmin()) {
+      <button class="btn btn-primary" (click)="toggleForm()">
+        {{ showForm ? 'Cancel' : '+ New Plan' }}
+      </button>
+    }
+  </div>
+
+  <!-- FORMULARIO DE CREACIÓN (Se mantiene igual) -->
+  @if (showForm) {
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Create new Social Plan</h5>
+        <form (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label class="form-label">Name *</label>
+            <input type="text" class="form-control" [(ngModel)]="newPlan.name" name="name" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" [(ngModel)]="newPlan.description" name="description" rows="2"></textarea>
+          </div>
+
+          <hr>
+          <h6 class="mb-3">Activities of plan (opcional)</h6>
+          <div class="row g-2 mb-3">
+            <div class="col-md-4">
+              <input type="text" class="form-control" [(ngModel)]="newActivity.name" name="activityName" placeholder="Name of the activity">
+            </div>
+            <div class="col-md-5">
+              <input type="text" class="form-control" [(ngModel)]="newActivity.description" name="activityDescription" placeholder="Description">
+            </div>
+            <div class="col-md-3">
+              <button type="button" class="btn btn-outline-primary w-100" (click)="addActivityToTemp()">+ Add</button>
+            </div>
+          </div>
+
+          @if (tempActivities.length > 0) {
+            <div class="mb-3">
+              <ul class="list-group">
+                @for (act of tempActivities; track $index; let i = $index) {
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div><strong>{{ act.name }}</strong> <small class="text-muted ms-2">{{ act.description }}</small></div>
+                    <button type="button" class="btn btn-sm btn-danger" (click)="removeActivityFromTemp(i)">×</button>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+
+          <hr>
+          <button class="btn btn-success w-100">Save Plan</button>
+        </form>
+      </div>
+    </div>
+  }
+
+  <table class="table table-hover align-middle">
+    <thead class="table-light">
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th class="text-center">Participants</th>
+      <th>Owner</th>
+      <th class="text-center">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (plan of plans; track plan.id) {
+        <tr>
+          <td class="fw-bold">{{ plan.name }}</td>
+          <td>{{ plan.description }}</td>
+          <td class="text-center">
+            <span class="badge bg-secondary rounded-pill">{{ plan.userList?.length || 0 }}</span>
+          </td>
+          <td>
+            {{ plan.owner.name }} {{ plan.owner.surname }}
+            @if (isOwner(plan)) { <span class="badge bg-success ms-1">You</span> }
+          </td>
+          <td class="text-center">
+            <div class="d-flex justify-content-center" style="gap: 10px;">
+              <button class="btn btn-primary btn-sm" [routerLink]="['/', auth.getStudentId(), 'social-plans', plan.id]">
+                Enter
+              </button>
+
+              @if (isOwner(plan)) {
+                <button class="btn btn-danger btn-sm" (click)="deletePlan(plan.id!)">Delete Plan</button>
+              }
+            </div>
+          </td>
+        </tr>
+      }
+      @if (plans.length === 0) {
+        <tr>
+          <td colspan="5" class="text-center text-muted py-4">There are no Social Plans created yet.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
