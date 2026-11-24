@@ -1,0 +1,80 @@
+<div class="col-md-8 offset-md-2 mt-4">
+  <button class="btn btn-outline-secondary mb-3" (click)="goBack()">
+     Back to Social Plans
+  </button>
+
+  @if (plan) {
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-dark text-white p-3">
+        <h3 class="mb-0">{{ plan.name }}</h3>
+      </div>
+
+      <div class="card-body">
+        <p class="lead">{{ plan.description }}</p>
+
+        <p class="mb-2">
+          <strong>Owner:</strong> {{ plan.owner.name }} {{ plan.owner.surname }}
+          @if (isOwner(plan)) { <span class="badge bg-success ms-2">You</span> }
+        </p>
+
+        <div class="d-flex gap-2 mb-4 mt-3">
+          @if (canJoin(plan)) {
+            <button class="btn btn-success" (click)="joinPlan()">Join Plan</button>
+          }
+          @if (canLeave(plan)) {
+            <button class="btn btn-outline-danger" (click)="leavePlan()">Leave Plan</button>
+          }
+          @if (isParticipant(plan) && !isOwner(plan)) {
+            <button class="btn btn-outline-success" disabled>You are a participant</button>
+          }
+        </div>
+
+        <!-- Gestión de participantes (Solo el Admin/Owner) -->
+        @if (auth.isAdmin() && isOwner(plan)) {
+          <div class="mb-4 p-3 border rounded bg-light">
+            <h5 class="fw-bold mb-3">Manage Participants ({{ plan.userList?.length || 0 }})</h5>
+            <ul class="list-group">
+              @for (participant of plan.userList; track participant.id) {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>{{ participant.name }} {{ participant.surname }}</span>
+                  @if (participant.id !== plan.owner.id) {
+                    <button class="btn btn-sm btn-outline-danger" (click)="kickParticipant(participant.id)">
+                      Remove
+                    </button>
+                  } @else {
+                    <span class="badge bg-primary">Owner</span>
+                  }
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
+        <!-- Lista de Actividades -->
+        <div class="mt-4">
+          <h4 class="fw-bold">Activities</h4>
+          @if (plan.activityList && plan.activityList.length > 0) {
+            <ul class="list-group list-group-flush mt-3">
+              @for (a of plan.activityList; track a.id) {
+                <li class="list-group-item px-0">
+                  <h5 class="mb-1 text-primary">{{ a.name }}</h5>
+                  <p class="mb-0 text-muted">{{ a.description }}</p>
+                </li>
+              }
+            </ul>
+          } @else {
+            <div class="alert alert-info mt-3">There are no activities on this Plan yet.</div>
+          }
+        </div>
+
+      </div>
+    </div>
+  } @else {
+    <div class="text-center mt-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading plan details...</p>
+    </div>
+  }
+</div>

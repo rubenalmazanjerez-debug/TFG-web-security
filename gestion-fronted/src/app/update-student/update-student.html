@@ -1,0 +1,105 @@
+<div class="col-md-6 offset-md-3">
+  <h3 class="text-center">Update Student</h3>
+  <form (ngSubmit)="onSubmit()" #studentForm="ngForm">
+    <div class="form-group">
+      <label>Name : </label>
+      <input
+        type="text"
+        class="form-control"
+        id="name"
+        [(ngModel)]="student.name"
+        name="name"
+        required
+        minlength="1"
+        placeholder="Type your name"
+        #name="ngModel"
+      />
+      <div class="alert alert-danger" *ngIf="name.invalid && (name.dirty || name.touched)">
+        <div *ngIf="name.errors?.['required']">
+          Type your name
+        </div>
+        <div *ngIf="name.errors?.['minlength']">
+          Name has to have at least 1 character
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Surname : </label>
+      <input
+        type="text"
+        class="form-control"
+        id="surname"
+        [(ngModel)]="student.surname"
+        name="surname"
+        required
+        minlength="1"
+        placeholder="Type your surname"
+        #surname="ngModel"
+      />
+      <div class="alert alert-danger" *ngIf="surname.invalid && (surname.dirty || surname.touched)">
+        <div *ngIf="surname.errors?.['required']">
+          Type your surname
+        </div>
+        <div *ngIf="surname.errors?.['minlength']">
+          Surname has to have at least 1 character
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Email : </label>
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        [(ngModel)]="student.email"
+        name="email"
+        pattern="[a-zA-Z0-9._%+-]+&#64;[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+        required
+        placeholder="Type your email"
+        #email="ngModel"
+      />
+      <div class="alert alert-danger" *ngIf="email.invalid && (email.dirty || email.touched)">
+        <div *ngIf="email.errors?.['required']">
+          Type your email
+        </div>
+        <div *ngIf="email.errors?.['pattern']">
+          Type your email with the next format: user100&#64;gmail.com
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>New Password (optional): </label>
+      <input type="password"
+             class="form-control"
+             id="password"
+             [(ngModel)]="student.password"
+             name="password"
+             placeholder="Leave blank to keep current password">
+    </div>
+
+    <div class="form-group">
+      <label>Age : </label>
+      <input
+        type="number"
+        class="form-control"
+        id="age"
+        [(ngModel)]="student.age"
+        name="age"
+        required
+        placeholder="Type your age"
+        #age="ngModel"
+      />
+      <div class="alert alert-danger" *ngIf="age.invalid && (age.dirty || age.touched)">
+        <div *ngIf="age.errors?.['required']">
+          Type your age
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-success" [disabled]="!studentForm.form.valid">Save</button>
+  </form>
+</div>
+
